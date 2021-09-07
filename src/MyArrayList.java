@@ -33,6 +33,7 @@ public class MyArrayList <T> implements List {
             T[] temp = t;
             t = (T[]) new Object[temp.length + INITIAL_CAPACITY];
             System.arraycopy(temp, 0, t, 0, temp.length);
+            capacity = t.length;
         }
         t[size++] = (T) o;
         return true;
@@ -60,32 +61,25 @@ public class MyArrayList <T> implements List {
             t[index] = (T) element;
             System.arraycopy(temp, index, t, index + 1, temp.length - index);
         }
+        capacity = t.length;
         size++;
     }
 
     @Override
     public Object remove(int index) {
         if (index >= size || index < 0) throw new IllegalArgumentException("Неправильно вказаний індекс");
+        T[] temp = t;
+        t = (T[]) new Object[size - 1];
         if (index == t.length - 1){
-            T[] temp = t;
-            t = (T[]) new Object[size - 1];
             System.arraycopy(temp, 0, t, 0, t.length);
-            size--;
-            return temp[index];
         } else if (index == 0){
-            T[] temp = t;
-            t = (T[]) new Object[size - 1];
             System.arraycopy(temp, 1, t, 0, t.length);
-            size--;
-            return temp[index];
         } else {
-            T[] temp = t;
-            t = (T[]) new Object[size - 1];
             System.arraycopy(temp, 0, t, 0, index);
             System.arraycopy(temp, index + 1, t, index, size - (index + 1));
-            size--;
-            return temp[index];
         }
+        size--;
+        return temp[index];
     }
 
     @Override
@@ -95,24 +89,22 @@ public class MyArrayList <T> implements List {
 
     @Override
     public boolean isEmpty() {
-        if (size == 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return size == 0;
     }
 
     @Override
     public Object get(int index) {
+        if (index > size || index < 0) throw new IllegalArgumentException("Неправильно вказаний індекс");
         return t[index];
     }
 
     @Override
     public boolean contains(Object o) {
         for (int i = 0; i < size; i++){
-            if (t[i].equals(o) && t[i].hashCode() == o.hashCode()){
-                return true;
+            if (t[i].hashCode() == o.hashCode()){
+                if (t[i].equals(o)){
+                    return true;
+                }
             }
         }
         return false;
@@ -127,41 +119,75 @@ public class MyArrayList <T> implements List {
     @Override
     public Object set(int index, Object element) {
         if (index >= size || index < 0) throw new IllegalArgumentException("Неправильно вказаний індекс");
+        T oldValue = t[index];
         t[index] = (T) element;
-        return element;
+        return oldValue;
     }
 
     @Override
     public int indexOf(Object o) {
         for (int i = 0; i < size; i++){
-            if (t[i].equals(o) && t[i].hashCode() == o.hashCode()){
-                return i;
+            if (t[i].hashCode() == o.hashCode()){
+                if (t[i].equals(o)){
+                    return i;
+                }
             }
         }
         return -1;
     }
 
-
-
-
-
-
-    //////////// Not Implemented ////////////
-
-    @Override
-    public Iterator iterator() {
-        throw new NotImplementedException();
-    }
-
     @Override
     public Object[] toArray() {
-        throw new NotImplementedException();
+        return t;
     }
 
     @Override
     public boolean remove(Object o) {
-        throw new NotImplementedException();
+        for (int i = 0; i < size; i++){
+            if (t[i].hashCode() == o.hashCode()){
+                if (t[i].equals(o)){
+
+                    T[] temp = t;
+                    t = (T[]) new Object[size - 1];
+                    if (i == t.length - 1){
+                        System.arraycopy(temp, 0, t, 0, t.length);
+                    } else if (i == 0){
+                        System.arraycopy(temp, 1, t, 0, t.length);
+                    } else {
+                        System.arraycopy(temp, 0, t, 0, i);
+                        System.arraycopy(temp, i + 1, t, i, size - (i + 1));
+                    }
+                    size--;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
+
+    private class ArIterator implements Iterator {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public Object next() {
+            return t[index++];
+        }
+    }
+
+    @Override
+    public Iterator iterator() {
+        return new ArIterator();
+    }
+
+
+
+    //////////// Not Implemented ////////////
 
     @Override
     public boolean addAll(Collection c) {
