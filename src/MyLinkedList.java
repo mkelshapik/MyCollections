@@ -24,10 +24,9 @@ public class MyLinkedList <E> implements List {
 
         private Node(E val) {
             this.val = val;
-            size++;
         }
-
     }
+
     @Override
     public boolean add(Object o) {
         Node<E> newNode = new Node<>((E)o);
@@ -40,6 +39,7 @@ public class MyLinkedList <E> implements List {
             newNode.prev = tail;
             tail = newNode;
         }
+        size++;
         return true;
     }
 
@@ -68,6 +68,7 @@ public class MyLinkedList <E> implements List {
             current.next.prev = newNode;
             newNode.prev = current;
             current.next = newNode;
+            size++;
         }
     }
 

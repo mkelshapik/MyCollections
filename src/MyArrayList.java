@@ -78,6 +78,7 @@ public class MyArrayList <T> implements List {
             System.arraycopy(temp, 0, t, 0, index);
             System.arraycopy(temp, index + 1, t, index, size - (index + 1));
         }
+        capacity = t.length;
         size--;
         return temp[index];
     }
@@ -158,6 +159,7 @@ public class MyArrayList <T> implements List {
                         System.arraycopy(temp, i + 1, t, i, size - (i + 1));
                     }
                     size--;
+                    capacity = t.length;
                     return true;
                 }
             }

@@ -12,12 +12,25 @@ class MyLinkedListTest {
     void isEmpty() {
         // check is the list really empty
         assertTrue(myLinkedList.isEmpty(), "List isn`t empty!");
+
+        myLinkedList.add(0);
+        assertFalse(myLinkedList.isEmpty());
     }
 
     @Test
     void get() {
         // catch throw for empty list
         assertThrows(IndexOutOfBoundsException.class, () -> myLinkedList.get(0));
+
+        // check last and first el in list
+        myLinkedList.add(0);
+        myLinkedList.add(1);
+        myLinkedList.add(2);
+        myLinkedList.add(3);
+        myLinkedList.add(4);
+
+        assertEquals(4, myLinkedList.indexOf(4));
+        assertEquals(0, myLinkedList.get(0));
     }
 
     @Test
@@ -139,6 +152,11 @@ class MyLinkedListTest {
         assertEquals(0, myLinkedList.indexOf(0));
         assertEquals(1, myLinkedList.indexOf(1));
         assertEquals(3, myLinkedList.indexOf(2));
+
+        //now remove some el and check index
+        myLinkedList.remove(2);
+        myLinkedList.remove(3);
+        assertEquals(2, myLinkedList.get(2));
     }
 
     @Test
