@@ -17,6 +17,12 @@ class MyStackTest {
     void isEmpty() {
         // check fun with free stack
         assertTrue(myStack.isEmpty(), "Stack isn`t Empty!");
+        // check fun with some el
+        myStack.push(10);
+        assertFalse(myStack.isEmpty());
+        // check after pop
+        myStack.pop();
+        assertTrue(myStack.isEmpty());
     }
 
 

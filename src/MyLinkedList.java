@@ -1,26 +1,17 @@
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
-public class MyLinkedList <E> implements List {
-
-
-    public MyLinkedList(){
-        head = null;
-        tail = null;
-    }
+public class MyLinkedList<E> implements List<E> {
 
     private Node<E> head;
     private Node<E> tail;
     private int size = 0;
 
-    private class Node<E>{
+    private class Node<E> {
         private E val;
-        private Node next;
-        private Node prev;
+        private Node<E> next;
+        private Node<E> prev;
 
         private Node(E val) {
             this.val = val;
@@ -28,12 +19,10 @@ public class MyLinkedList <E> implements List {
     }
 
     @Override
-    public boolean add(Object o) {
-        Node<E> newNode = new Node<>((E)o);
-        if (head == null){
+    public boolean add(E o) {
+        Node<E> newNode = new Node<>(o);
+        if (head == null) {
             head = tail = newNode;
-            head.next = tail;
-            tail.prev = head;
         } else {
             tail.next = newNode;
             newNode.prev = tail;
@@ -44,39 +33,40 @@ public class MyLinkedList <E> implements List {
     }
 
     @Override
-    public void add(int index, Object element) {
+    public void add(int index, E element) {
         if (index > size || index < 0) throw new IndexOutOfBoundsException("Індекс вказаний не вірно!");
-        Node<E> newNode = new Node<E>((E) element);
-        if (head == null){
+        Node<E> newNode = new Node<E>(element);
+        if (head == null) {
             head = tail = newNode;
-            head.next = tail;
-            tail.prev = head;
-        } else if (index == 0){
+        } else if (index == 0) {
             newNode.next = head;
             head.prev = newNode;
             head = newNode;
-        } else if (index == size){
+        } else if (index == size) {
             tail.next = newNode;
             newNode.prev = tail;
             tail = newNode;
         } else {
             Node<E> current = head;
-            for (int i = 0; i < index - 1; i++){
+            for (int i = 0; i < index - 1; i++) {
                 current = current.next;
             }
             newNode.next = current.next;
             current.next.prev = newNode;
             newNode.prev = current;
             current.next = newNode;
-            size++;
         }
+        size++;
     }
 
     @Override
-    public Object remove(int index) {
+    public E remove(int index) {
         if (index >= size || index < 0) throw new IndexOutOfBoundsException("Індекс вказаний не вірно!");
         Node<E> temp;
-        if (index == size - 1) {
+        if (size == 1) {
+            temp = head;
+            clear();
+        } else if (index == size - 1) {
             temp = tail;
             tail = tail.prev;
             tail.next = null;
@@ -99,44 +89,46 @@ public class MyLinkedList <E> implements List {
 
     @Override
     public boolean remove(Object o) {
-        Node<E> current = head;
-        for (int i = 0; i < size; i++){
-            if (current.val == o || current.next == null){
-                break;
-            } else {
-                current = current.next;
+        for (Node<E> current = head; current != null; current = current.next) {
+            if (Objects.equals(current.val, o)) {
+                if (size == 1) {
+                    clear();
+                } else if (current == head) {
+                    head = head.next;
+                    //head.prev = null;
+                } else if (current == tail) {
+                    tail = tail.prev;
+                    tail.next = null;
+                } else {
+                    current.next.prev = current.prev;
+                    current.prev.next = current.next;
+                }
+                size--;
+                return true;
             }
         }
-
-        if (current.val != o) return false;
-        if (current == head) {
-            head = head.next;
-            head.prev = null;
-        } else if (current == tail) {
-            tail = tail.prev;
-            tail.next = null;
-        } else {
-            current.next.prev = current.prev;
-            current.prev.next = current.next;
-        }
-        size--;
-        return true;
+        return false;
     }
 
     @Override
     public boolean contains(Object o) {
         Node<E> current = head;
-        while (current.val != (E) o){
-            if (current.next == null) break;
+        while (current != null) {
+            if (Objects.equals(current.val, o)) {
+                return true;
+            }
             current = current.next;
         }
-        return current.val == (E) o;
+        return false;
     }
 
     @Override
-    public Object set(int index, Object element) {
+    public E set(int index, E element) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Індекс вказаний не вірно!");
+        }
         Node<E> current = head;
-        for (int i = 0; i < index; i++){
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         current.val = (E) element;
@@ -147,24 +139,23 @@ public class MyLinkedList <E> implements List {
     public int indexOf(Object o) {
         Node<E> current = head;
         int index = 0;
-        while (current.val != (E) o){
+        while (current != null) {
+            if (Objects.equals(current.val, o)) {
+                return index;
+            }
             index++;
             current = current.next;
         }
-        if (current.val != (E) o) {
-            return -1;
-        } else {
-            return index;
-        }
+        return -1;
     }
 
     @Override
-    public Object get(int index) {
-        if (index >= size || index < 0) throw new IndexOutOfBoundsException("Індекс вказаний не вірно!");
-        if (index == 0) return head.val;
-        if (index == size - 1) return tail.val;
+    public E get(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Індекс вказаний не вірно!");
+        }
         Node<E> current = head;
-        for (int i = 0; i < index; i++){
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         return current.val;
@@ -182,43 +173,64 @@ public class MyLinkedList <E> implements List {
 
     @Override
     public void clear() {
-        for (Node<E> cur = head; cur != null; ) {
-            Node<E> next = cur.next;
-            cur.val = null;
-            cur.next = null;
-            cur.prev = null;
-            cur = next;
-        }
         head = tail = null;
         size = 0;
     }
 
+    @Override
+    public Iterator<E> iterator() {
+        final Node<E>[] currentNode = new Node[]{head};
+        return new Iterator<E>() {
+
+            @Override
+            public boolean hasNext() {
+                return currentNode[0] != null;
+            }
+
+            @Override
+            public E next() {
+                Node<E> current = currentNode[0];
+                currentNode[0] = currentNode[0].next;
+                return current.val;
+            }
+        };
+    }
+
+    @Override
+    public Object[] toArray() {
+        Object[] result = new Object[size];
+        Node<E> current = head;
+        int inx = 0;
+        while (current != null) {
+            result[inx++] = current.val;
+            current = current.next;
+        }
+        return result;
+    }
+
+    @Override
+    public boolean containsAll(Collection c) {
+        for (Object e : c) {
+            if (!contains(e)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        for (E e : c) {
+            add(e);
+        }
+        return true;
+    }
 
 
     //////////// NotImplemented ////////////
 
     @Override
-    public Iterator iterator() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public Object[] toArray() {
-        throw new NotImplementedException();
-    }
-
-    @Override
     public Object[] toArray(Object[] a) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public boolean containsAll(Collection c) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public boolean addAll(Collection c) {
         throw new NotImplementedException();
     }
 

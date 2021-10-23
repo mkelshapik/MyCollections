@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MyLinkedListTest {
@@ -171,5 +173,21 @@ class MyLinkedListTest {
 
         assertTrue(myLinkedList.isEmpty());
         assertEquals(0, myLinkedList.size());
+    }
+
+    @Test
+    void iterator() {
+        myLinkedList.add(0);
+        myLinkedList.add(1);
+        myLinkedList.add(2);
+        myLinkedList.add(3);
+        myLinkedList.add(4);
+
+        Iterator<Integer> iterator = myLinkedList.iterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+
+        }
+        System.out.println(myLinkedList.size());
     }
 }
