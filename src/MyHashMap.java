@@ -1,3 +1,5 @@
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.*;
 
 public class MyHashMap<K, V> implements Map<K, V> {
@@ -5,7 +7,6 @@ public class MyHashMap<K, V> implements Map<K, V> {
     private MyLinkedList<Node<K, V>>[] table;
     private int size;
     private static final int INITIAL_CAPACITY = 16;
-    private final float threshold = 0.75f;
 
 
     public MyHashMap() {
@@ -27,6 +28,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
     }
 
     private void checkAndUpSize() {
+        float threshold = 0.75f;
         if (size >= table.length * threshold) {
             MyLinkedList<Node<K, V>>[] oldTable = table;
             init(table.length * 2);
@@ -131,29 +133,31 @@ public class MyHashMap<K, V> implements Map<K, V> {
         size = 0;
     }
 
+
     //////////// NotImplemented ////////////
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
-
+    public Set<K> keySet() {
+        throw new NotImplementedException();
     }
 
     @Override
-    public Set<K> keySet() {
-        return null;
+    public void putAll(Map<? extends K, ? extends V> m) {
+        throw new NotImplementedException();
     }
 
     @Override
     public Collection<V> values() {
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return null;
+        throw new NotImplementedException();
     }
 
-    private class Node<K, V> {
+    private static class Node<K, V> {
+
         private final K key;
         private final V value;
 

@@ -1,4 +1,3 @@
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -177,17 +176,53 @@ class MyLinkedListTest {
 
     @Test
     void iterator() {
-        myLinkedList.add(0);
-        myLinkedList.add(1);
-        myLinkedList.add(2);
-        myLinkedList.add(3);
-        myLinkedList.add(4);
+        for (int i = 0; i <= 5; i++) {
+            myLinkedList.add(i);
+        }
 
         Iterator<Integer> iterator = myLinkedList.iterator();
         while (iterator.hasNext()) {
-            iterator.next();
-
+            System.out.println(iterator.next());
+            iterator.remove();
+            System.out.println("Size = " + myLinkedList.size());
         }
-        System.out.println(myLinkedList.size());
+    }
+
+    @Test
+    void toArray() {
+        for (int i = 0; i <= 20; i++) {
+            myLinkedList.add(i);
+        }
+        Object[] objects = myLinkedList.toArray();
+        for (Object o : objects) {
+            System.out.println(o);
+        }
+    }
+
+    @Test
+    void containsAll() {
+        MyLinkedList<Integer> integers = new MyLinkedList<>();
+        for (int i = 0; i < 20; i++) {
+            integers.add(i);
+            myLinkedList.add(i);
+        }
+        assertTrue(myLinkedList.containsAll(integers));
+        myLinkedList.add(21);
+        assertTrue(myLinkedList.containsAll(integers));
+        integers.add(34);
+        assertFalse(myLinkedList.containsAll(integers));
+    }
+
+    @Test
+    void addAll() {
+        for (int i = 0; i < 10; i++) {
+            myLinkedList.add(i);
+        }
+        MyLinkedList<Integer> integers = new MyLinkedList<>();
+        integers.addAll(myLinkedList);
+        int c = 0;
+        for (Integer i:integers) {
+            assertEquals(i, myLinkedList.get(c++));
+        }
     }
 }

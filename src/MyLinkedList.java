@@ -91,11 +91,8 @@ public class MyLinkedList<E> implements List<E> {
     public boolean remove(Object o) {
         for (Node<E> current = head; current != null; current = current.next) {
             if (Objects.equals(current.val, o)) {
-                if (size == 1) {
-                    clear();
-                } else if (current == head) {
+                if (current == head) {
                     head = head.next;
-                    //head.prev = null;
                 } else if (current == tail) {
                     tail = tail.prev;
                     tail.next = null;
@@ -192,6 +189,26 @@ public class MyLinkedList<E> implements List<E> {
                 Node<E> current = currentNode[0];
                 currentNode[0] = currentNode[0].next;
                 return current.val;
+            }
+
+            @Override
+            public void remove() {
+                if (currentNode[0] == null) {
+                    tail = tail.prev;
+                    tail.next = null;
+                } else {
+                    Node<E> current = currentNode[0].prev;
+                    if (current == head) {
+                        head = head.next;
+                    } else if (current == tail) {
+                        tail = tail.prev;
+                        tail.next = null;
+                    } else {
+                        current.next.prev = current.prev;
+                        current.prev.next = current.next;
+                    }
+                }
+                size--;
             }
         };
     }
